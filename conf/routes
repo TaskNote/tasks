@@ -16,5 +16,4 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 GET     /tasks                      controllers.TaskController.get
 
 
-# TODO this should be a post
-GET /tasks/:title/:note         controllers.TaskController.put(title, note)
+POST    /tasks/:title/:note         controllers.TaskController.put(title, note)

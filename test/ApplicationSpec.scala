@@ -39,4 +39,19 @@ class ApplicationSpec extends PlaySpec with OneAppPerTest {
 
   }
 
+
+  // TODO not sure how this will interact with other test wrt to the db
+  "TaskController" should {
+    "write a task to the database" in {
+      val tasks = route(app, FakeRequest(POST, "/tasks/internet/eating")).get
+      status(tasks) mustBe OK
+      contentType(tasks) mustBe Some("text/html")
+      contentAsString(tasks) must include regex "Task\\(\\d+,internet,eating,None,"
+
+      val moreTasks = route(app, FakeRequest(POST, "/tasks/internet/eatingAgain")).get
+      status(moreTasks) mustBe OK
+      contentType(moreTasks) mustBe Some("text/html")
+      contentAsString(moreTasks) must (include regex "Task\\(\\d+,internet,eating" and include regex "Task\\(\\d+,internet,eatingAgain")
+    }
+  }
 }
