@@ -63,6 +63,13 @@ class DBSpec extends JUnitSuite with Matchers {
     // verify that the list is not empty
     allTasks.isEmpty should not be true
 
+    // Create a task with a topic ID
+    val task: Task = Task(0, title = "to do", topicID = Option(3), note = "some note")
+    val insertedTask: Task = DBWriter.putTask(task).get
+
+    // verify that we can return the singular task and that it is the one created above
+    val listWithTask: List[Task] = DBReader.getTasksForTopicID(insertedTask.topicID.get)
+    listWithTask foreach {task: Task => task.id should be (insertedTask.id) }
 
   }
 

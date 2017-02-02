@@ -22,8 +22,31 @@ object DBReader {
     } yield taskTopic
 
     DBConnection.run(query.result).get.toList
+
   }
 
+  /**
+    *
+    * This method will return all tasks given a taskTopic ID.
+    *
+    * @param topicID the integer value that represents the ID of the topic
+    *
+    * @return a list of topics.
+    */
+
+  def getTasksForTopicID(topicID: Int): List[Task] = {
+
+    // Creating a query statement to query for all tasks where the task.topID id is equal to the one provided
+    val query: Query[Tasks, Task, Seq] = for {
+
+      // for all tasks if task's topic ID is equal to topic ID in param
+      task <- Tables.tasks if task.topicID === topicID
+
+    } yield task
+
+    DBConnection.run(query.result).get.toList
+
+  }
 
   /**
     * This method will call a query to the DB and return all Tasks. No param.
@@ -59,6 +82,36 @@ object DBReader {
     DBConnection.run(query.result).get.toList
 
   }
+
+  /**
+    * This method will return all tasks that are dependencies for the taskID provided. Note, this does NOT bring
+    * back the tree of tasks.
+    *
+    * @param taskID the task ID of the task the dependencies are for
+    *
+    * @return the dependency tasks for the taskID given
+    *
+    */
+
+  //TODO Write tests for this 
+  def getDependencyTasksforTaskID(taskID: Int): List[Task] = {
+
+    // Create query
+    val query: Query[Tasks, Task, Seq] = for {
+
+      dep <- Tables.dependencies if dep.taskID === taskID
+      task <- Tables.tasks if task.id === dep.dependencyTaskID
+
+    } yield task
+
+    DBConnection.run(query.result).get.toList
+  }
+
+  /**
+    * This method will return all tasks that are dependent on the task, which will be represented by the task ID.
+    * This
+    */
+
 
 }
 

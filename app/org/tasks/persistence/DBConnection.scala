@@ -1,6 +1,5 @@
 package org.tasks.persistence
 
-
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 import slick.driver.H2Driver.api._
