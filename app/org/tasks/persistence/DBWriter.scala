@@ -45,15 +45,13 @@ object DBWriter {
     * @param dependencies a list of tasks that are the dependencies for the task param above
     * @return a try that contains the List of dependencies that was inserted
     */
-  def putDependency(task: Task, dependencies: List[Task]): Try[List[Dependency]] = {
-    
+  def putDependencies(task: Task, dependencies: List[Task]): Try[List[Dependency]] = {
     val deps: List[Dependency] = dependencies map { dependsOn => Dependency(0, task.id, dependsOn.id) }
-    
 
-    // TODO use batch insert
-    val actions = deps map { dep =>
-      Tables.dependencies returning Tables.dependencies.map(_.id) into { (depe, id) => depe.copy(id = id) } += dep
-    }
-    Try(actions map { DBConnection.run(_).get })
+    val action: DBIO[Seq[Dependency]] = Tables.dependencies returning Tables.dependencies.map(_.id) into {
+      (depe, id) => depe.copy(id = id)
+    } ++= deps
+
+    DBConnection.run(action) map { _.toList }
   }
 }
