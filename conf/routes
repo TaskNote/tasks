@@ -17,3 +17,7 @@ GET     /tasks                      controllers.TaskController.get
 
 
 POST    /tasks/:title/:note         controllers.TaskController.put(title, note)
+
+
+
+GET     /submitTask                 controllers.TaskController.submitTask

@@ -41,6 +41,14 @@ object DBWriter {
 
   /**
     *
+    * @param task the [[Task]] with a dependency.
+    * @param dependency [[Task]] that are the dependencies for the task param above
+    * @return a try that contains the [[Dependency]] that was inserted
+    */
+  def putDependency(task: Task, dependency: Task): Try[Dependency] = this.putDependencies(task, List(dependency)) map { _.head }
+
+  /**
+    *
     * @param task the task with the dependencies.
     * @param dependencies a list of tasks that are the dependencies for the task param above
     * @return a try that contains the List of dependencies that was inserted

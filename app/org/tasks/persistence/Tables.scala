@@ -10,7 +10,7 @@ import slick.driver.H2Driver.api._
   */
 
 // Case class for task that has the same fields as the table.
-case class Task(id: Int, title: String, note: String, topicID: Option[Int] = None, creationDate: Date = new Date(System.currentTimeMillis()),
+case class Task(id: Int = 0, title: String, note: String, topicID: Option[Int] = None, creationDate: Date = new Date(System.currentTimeMillis()),
                 dueDate: Option[Date] = None, isDone: Boolean = false)
 
 // A task Table with 5 columns: id, title, note, topicID, and dueDate
