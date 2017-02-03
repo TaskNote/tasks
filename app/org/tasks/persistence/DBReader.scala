@@ -84,7 +84,7 @@ object DBReader {
   }
 
   /**
-    * This method will return all tasks that are dependencies for the taskID provided. Note, this does NOT bring
+    * This method will return all tasks that are direct dependencies for the taskID provided. Note, this does NOT bring
     * back the tree of tasks.
     *
     * @param taskID the task ID of the task the dependencies are for
@@ -108,7 +108,89 @@ object DBReader {
   }
 
   /**
-    * This method will return all tasks that are dependent on the task, which will be represented by the task ID.
+    * This method will return all distinct transitive dependency tasks for the taskID provided
+    *
+    * @param taskID the ID of the [[Task]] to get the transitive dependency tasks for
+    *
+    * @param transitives helper parameter used solely by the recursion in the function. DO NOT POPULATE.
+    *
+    * @return a list of tasks that represent all of the transitive dependency tasks for the task ID
+    *
+    *
+    * @TODO Write Tests
+    */
+
+  def getTransitiveDependencyTasks(taskID: Int, transitives: List[Task] = List.empty): List[Task] = {
+
+    // Create Query
+    val query: Query[Tasks, Task, Seq] = for {
+
+      // querying for all dependencies where dependency's task ID equals task ID
+      dep <- Tables.dependencies if dep.taskID === taskID
+
+      // then querying for tasks where the dependencies from aboves' dependencyTaskID is equal to the task's ID
+      task <- Tables.tasks if dep.dependencyTaskID === task.id
+
+    } yield task
+
+    // get the query's result
+    val dependencyList: List[Task] = DBConnection.run(query.result).get.toList
+
+    // if we are at the base case where we cannot traverse the dependencies further, return all distinct transitives
+    if (dependencyList.isEmpty) transitives.distinct
+
+    // otherwise, call itself for each dependency and add them to the list of transitive tasks
+    else {
+      val children = dependencyList flatMap{ task => this.getTransitiveDependencyTasks(task.id) }
+      transitives ++ children
+    }
+
+  }
+
+  /**
+    * This method will return all distinct transitive dependents of the task for the taskID provided
+    *
+    * @param taskID the ID of the [[Task]] to get the transitive dependents for
+    *
+    * @param transitives helper parameter used solely by the recursion in the function. DO NOT POPULATE.
+    *
+    * @return a list of transitive dependent tasks
+    *
+    *
+    * @TODO Write tests
+    */
+
+  def getTransitiveDependentTasks(taskID: Int, transitives: List[Task] = List.empty): List[Task] = {
+
+    // Create Query
+    val query: Query[Tasks, Task, Seq] = for {
+
+      // query for all dependencies where the dependencies dependency task ID is equal to taskID
+      dep <- Tables.dependencies if dep.dependencyTaskID === taskID
+
+      // get all tasks where its task ID is equal to the taskID from the dependencies above
+      task <- Tables.tasks if dep.taskID === task.id
+
+    } yield task
+
+    // get query result
+    val dependentList: List[Task] = DBConnection.run(query.result).get.toList
+
+    // if the list is empty return the distinct tasks in the transitives list
+    if (dependentList.isEmpty) transitives.distinct
+
+    // otherwise call itself for each tasks in the dependent list and add its results to the transitive list
+    else {
+      val children = dependentList flatMap{ task => this.getTransitiveDependentTasks(task.id) }
+      transitives ++ children
+
+    }
+
+
+  }
+
+  /**
+    * This method will return all tasks that are direct dependents of the task, which will be represented by the task ID.
     *
     * @param taskID ID of the task we are finding dependents for
     *
