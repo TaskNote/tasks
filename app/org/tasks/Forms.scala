@@ -10,8 +10,8 @@ import play.api.data.Forms._
 // TODO rename, conflicts with play classes
 object Forms {
 
-  def input2Task(title: String, note: String): Task = Task.apply(title = title, note = note)
-  def task2Input(task: Task) = Option((task.title, task.note))
+  private[this] def input2Task(title: String, note: String): Task = Task.apply(title = title, note = note)
+  private[this] def task2Input(task: Task) = Option((task.title, task.note))
 
   val taskForm: Form[Task] = Form(
     mapping(
