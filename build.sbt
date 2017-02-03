@@ -17,3 +17,5 @@ libraryDependencies ++= List(
   "org.scalatest" %% "scalatest" % "2.2.4" % "test",
   "junit" % "junit" % "4.11" % "test"
 )
+
+routesGenerator := InjectedRoutesGenerator

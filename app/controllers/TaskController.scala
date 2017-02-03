@@ -6,14 +6,13 @@ import javax.inject._
 import org.tasks.Forms
 import play.api._
 import play.api.mvc._
-import play.api.Play.current
-import play.api.i18n.Messages.Implicits._
+import play.api.i18n.{I18nSupport, MessagesApi}
 
 /**
   * Created by ergo on 2/1/17.
   */
 @Singleton
-class TaskController @Inject() extends Controller {
+class TaskController @Inject() (val messagesApi: MessagesApi) extends Controller with I18nSupport {
 
 
   /** @return all tasks in the database */
