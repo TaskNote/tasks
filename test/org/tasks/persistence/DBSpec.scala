@@ -73,5 +73,32 @@ class DBSpec extends JUnitSuite with Matchers {
 
   }
 
+  @Test
+  def Dependencies(): Unit = {
+
+    //Add two tasks and add a dependency between one another
+    val task: Task = Task(0, title = "to do", topicID = Option(3), note = "some note")
+    val anotherTask: Task = Task(0, title = "to do 2", topicID = Option(3), note = "some note again")
+    val insertedTask: Task = DBWriter.putTask(task).get
+    val anotherInsertedTask: Task = DBWriter.putTask(anotherTask).get
+
+    val insertedDependency: Dependency = DBWriter.putDependency(insertedTask, List(anotherInsertedTask)).get.head
+
+    // Verify that the dependency was created correctly
+    insertedDependency.taskID should be (insertedTask.id)
+    insertedDependency.dependencyTaskID should be (anotherInsertedTask.id)
+
+    // Test getting the dependency task and verify it is the correct task
+    val dependencyTask: Task = DBReader.getDependencyTasks(insertedTask.id).head
+    dependencyTask.id should be (anotherInsertedTask.id)
+
+    // Test getting the dependent task and verify it is the correct task
+    val dependentTask: Task = DBReader.getDependentTasks(anotherInsertedTask.id).head
+    dependentTask.id should be (insertedTask.id )
+
+
+
+  }
+
 
 }

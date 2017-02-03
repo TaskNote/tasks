@@ -93,8 +93,8 @@ object DBReader {
     *
     */
 
-  //TODO Write tests for this 
-  def getDependencyTasksforTaskID(taskID: Int): List[Task] = {
+  //TODO Write tests for this
+  def getDependencyTasks(taskID: Int): List[Task] = {
 
     // Create query
     val query: Query[Tasks, Task, Seq] = for {
@@ -109,9 +109,28 @@ object DBReader {
 
   /**
     * This method will return all tasks that are dependent on the task, which will be represented by the task ID.
-    * This
+    *
+    * @param taskID ID of the task we are finding dependents for
+    *
+    * @return a list of tasks that are the dependents
+    *
     */
 
+  def getDependentTasks(taskID: Int): List[Task] = {
+
+    // Create query
+    val query: Query[Tasks, Task, Seq] = for {
+
+      dependency <- Tables.dependencies if dependency.dependencyTaskID === taskID
+      task <- Tables.tasks if task.id === dependency.taskID
+
+
+    } yield task
+
+    DBConnection.run(query.result).get.toList
+
+
+  }
 
 }
 
