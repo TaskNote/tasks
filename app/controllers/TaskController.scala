@@ -29,20 +29,22 @@ class TaskController @Inject() (val messagesApi: MessagesApi) extends Controller
   }
 
 
-  def task = Action { implicit request =>
+  def createTask = Action { implicit request =>
     Forms.taskForm.bindFromRequest.fold(
       formWithErrors => {
+        Logger.info(s"error in form $formWithErrors")
         // TODO need more error handling here
         BadRequest(views.html.tasks(List.empty[Task]))
       },
       (task: Task) => {
+        Logger.info(s"got task $task from form")
         DBWriter.putTask(task)
         Redirect(routes.TaskController.get)
       }
     )
   }
 
-  def submitTask() = Action {
+  def addTaskForm() = Action {
     Ok(views.html.taskSubmit(Forms.taskForm))
   }
 }

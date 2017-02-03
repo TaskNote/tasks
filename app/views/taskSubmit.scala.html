@@ -1,7 +1,8 @@
 @import org.tasks.persistence.Task
 @(taskForm: Form[Task])(implicit messages: Messages)
 
-@helper.form(action = routes.TaskController.submitTask()) {
+@helper.form(action = routes.TaskController.createTask()) {
   @helper.inputText(taskForm("title"))
   @helper.inputText(taskForm("note"))
+<button id="submit" type="submit" value="Submit">submit</button>
 }

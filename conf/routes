@@ -20,4 +20,5 @@ POST    /tasks/:title/:note         controllers.TaskController.put(title, note)
 
 
 
-GET     /submitTask                 controllers.TaskController.submitTask
+GET     /addTaskForm                controllers.TaskController.addTaskForm
+POST    /createTask                 controllers.TaskController.createTask
