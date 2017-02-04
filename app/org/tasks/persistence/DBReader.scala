@@ -109,10 +109,12 @@ object DBReader {
 
   /**
     * This method will return all distinct transitive dependency tasks for the taskID provided
+    * (all child dependencies of the task with the given id.)
     *
     * @param taskID the ID of the [[Task]] to get the transitive dependency tasks for
     *
     * @param transitives helper parameter used solely by the recursion in the function. DO NOT POPULATE.
+    *                    TODO we probably want to use a nested helper def instead so we dont pollute the api.
     *
     * @return a list of tasks that represent all of the transitive dependency tasks for the task ID
     *
@@ -163,10 +165,12 @@ object DBReader {
 
   /**
     * This method will return all distinct transitive dependents of the task for the taskID provided
+    * (all ancestral tasks that depend on the [[Task]] with the given id.)
     *
     * @param taskID the ID of the [[Task]] to get the transitive dependents for
     *
     * @param transitives helper parameter used solely by the recursion in the function. DO NOT POPULATE.
+    *                    TODO we probably want to use a nested helper def instead so we dont pollute the api.
     *
     * @return a list of transitive dependent tasks
     *

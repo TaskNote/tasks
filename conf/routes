@@ -13,11 +13,13 @@ GET     /message                    controllers.AsyncController.message
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
 
+# view all tasks
 GET     /tasks                      controllers.TaskController.get
 
 
 POST    /tasks/:title/:note         controllers.TaskController.put(title, note)
 
 
-
-GET     /submitTask                 controllers.TaskController.submitTask
+# endpoints for task creation TODO we might want to rename this to addTask
+GET     /addTaskForm                controllers.TaskController.addTaskForm
+POST    /createTask                 controllers.TaskController.createTask
