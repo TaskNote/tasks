@@ -14,6 +14,7 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 
 
 # view all tasks
+# TODO rename to AppController or App or something that reflects this is global to all tables
 GET     /tasks                      controllers.TaskController.get
 
 
@@ -23,3 +24,8 @@ POST    /tasks/:title/:note         controllers.TaskController.put(title, note)
 # endpoints for task creation
 GET     /tasks/new                  controllers.TaskController.addTaskForm
 POST    /tasks                      controllers.TaskController.createTask
+
+
+# endpoints for dependency creations
+GET     /dep/new                    controllers.TaskController.addDependencyForm
+POST    /dep                        controllers.TaskController.createDependency

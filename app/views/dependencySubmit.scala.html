@@ -1,0 +1,8 @@
+@import org.tasks.persistence.Dependency
+@(dependencyForm: Form[Dependency])(implicit messages: Messages)
+
+@helper.form(action = routes.TaskController.createDependency()) {
+@helper.inputText(dependencyForm("ancestor"))
+@helper.inputText(dependencyForm("child"))
+<button id="submit" type="submit" value="Submit">submit</button>
+}

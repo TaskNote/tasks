@@ -2,7 +2,7 @@ package org.tasks
 
 import java.sql.Date
 
-import org.tasks.persistence.Task
+import org.tasks.persistence.{Dependency, Task}
 import play.api.data.Form
 import play.api.data.Forms._
 
@@ -17,11 +17,27 @@ object Forms {
 
   private[this] def task2Input(task: Task) = Option((task.title, task.note, task.dueDate ))
 
+
+  private[this] def input2Dependency(inputFrom: Int, inputTo: Int): Dependency =
+    Dependency.apply(taskID = inputFrom, dependencyTaskID = inputTo)
+
+  private[this] def dependency2Input(dependency: Dependency): Option[(Int, Int)] = Option(dependency.taskID, dependency.dependencyTaskID)
+
+
   val taskForm: Form[Task] = Form(
     mapping(
       "title" -> text,
       "note" -> text,
       "dueDate" -> optional(sqlDate)
     )(input2Task)(task2Input)
+  )
+
+
+
+  val dependencyForm: Form[Dependency] = Form(
+    mapping(
+      "ancestor" -> number,
+      "child" -> number
+    )(input2Dependency)(dependency2Input)
   )
 }

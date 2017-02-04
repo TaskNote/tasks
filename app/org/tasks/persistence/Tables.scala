@@ -65,7 +65,8 @@ class TaskTopics(tag: Tag)
 }
 
 // Dependency case class with 3 fields: taskID, and dependencyTaskID
-case class Dependency(id: Int, taskID: Int, dependencyTaskID: Int)
+// TODO consider renaming to ancestor and child
+case class Dependency(id: Int = 0, taskID: Int, dependencyTaskID: Int)
 
 // Table for dependencies
 class Dependencies(tag: Tag)
