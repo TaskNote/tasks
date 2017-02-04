@@ -122,6 +122,16 @@ object DBReader {
 
   def getTransitiveDependencyTasks(taskID: Int, transitives: List[Task] = List.empty): List[Task] = {
 
+    val allTasks = DBReader.getAllTasks()
+
+    println("TASKS HERE RIGHT HERE")
+    allTasks map(task => println(task.id))
+
+    val allDependencies = DBReader.getAllDependencies()
+
+    allDependencies map(dep => println(dep.id))
+
+
     // Create Query
     val query: Query[Tasks, Task, Seq] = for {
 
@@ -129,21 +139,25 @@ object DBReader {
       dep <- Tables.dependencies if dep.taskID === taskID
 
       // then querying for tasks where the dependencies from aboves' dependencyTaskID is equal to the task's ID
-      task <- Tables.tasks if dep.dependencyTaskID === task.id
+      task <- Tables.tasks if task.id === dep.dependencyTaskID
 
     } yield task
+
 
     // get the query's result
     val dependencyList: List[Task] = DBConnection.run(query.result).get.toList
 
+    dependencyList map(task => println(task.id))
+
     // if we are at the base case where we cannot traverse the dependencies further, return all distinct transitives
-    if (dependencyList.isEmpty) transitives.distinct
+    if (dependencyList.isEmpty) transitives
 
     // otherwise, call itself for each dependency and add them to the list of transitive tasks
     else {
-      val children = dependencyList flatMap{ task => this.getTransitiveDependencyTasks(task.id) }
-      transitives ++ children
+      val returnList = dependencyList flatMap{ task => this.getTransitiveDependencyTasks(task.id, transitives ++ dependencyList) }
+      returnList.distinct
     }
+
 
   }
 

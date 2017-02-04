@@ -84,6 +84,8 @@ class DBSpec extends JUnitSuite with Matchers {
 
     val insertedDependency: Dependency = DBWriter.putDependency(insertedTask, anotherInsertedTask).get
 
+    println("DEPEDNENCY HERE" + insertedDependency.id)
+
     // Verify that the dependency was created correctly
     insertedDependency.taskID should be (insertedTask.id)
     insertedDependency.dependencyTaskID should be (anotherInsertedTask.id)
@@ -95,6 +97,27 @@ class DBSpec extends JUnitSuite with Matchers {
     // Test getting the dependent task and verify it is the correct task
     val dependentTask: Task = DBReader.getDependentTasks(anotherInsertedTask.id).head
     dependentTask.id should be (insertedTask.id )
+
+    // add a dependency to the one that is current a dependent
+    val anotherDependency: Task = Task(0, title = "another one - dj khaled", topicID = Option(3), note = " whatever")
+    val insertDependencyTask: Task = DBWriter.putTask(anotherDependency).get
+
+    val secondDep: Dependency = DBWriter.putDependency(anotherInsertedTask, insertDependencyTask).get
+
+
+    println("tasks id is" + insertedTask.id)
+    // get a list of tasks by calling the transitive dependency task function
+    val transitiveTasks: List[Task] = DBReader.getTransitiveDependencyTasks(insertedTask.id)
+
+    transitiveTasks map{ _.id } equals List(anotherInsertedTask.id, insertDependencyTask.id) should be (true)
+
+    //transitiveTasks.equals(List(anotherInsertedTask, insertDependencyTask) ) should be (true)
+
+
+
+
+
+
 
 
 
