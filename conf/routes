@@ -20,6 +20,6 @@ GET     /tasks                      controllers.TaskController.get
 POST    /tasks/:title/:note         controllers.TaskController.put(title, note)
 
 
-# endpoints for task creation TODO we might want to rename this to addTask
-GET     /addTaskForm                controllers.TaskController.addTaskForm
-POST    /createTask                 controllers.TaskController.createTask
+# endpoints for task creation
+GET     /tasks/new                  controllers.TaskController.addTaskForm
+POST    /tasks                      controllers.TaskController.createTask
