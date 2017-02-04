@@ -12,17 +12,16 @@ import play.api.data.Forms._
 // TODO rename, conflicts with play classes
 object Forms {
 
-  private[this] def input2Task(inputTitle: String, inputNote: String, inputIsDone: Boolean, inputDueDate: Date): Task =
-    Task.apply(title = inputTitle, note = inputNote, isDone = inputIsDone)
-  // todo, dont call .get
-  private[this] def task2Input(task: Task) = Option((task.title, task.note, task.isDone, task.dueDate.get ))
+  private[this] def input2Task(inputTitle: String, inputNote: String, inputDueDate: Option[Date]): Task =
+    Task.apply(title = inputTitle, note = inputNote)
+
+  private[this] def task2Input(task: Task) = Option((task.title, task.note, task.dueDate ))
 
   val taskForm: Form[Task] = Form(
     mapping(
       "title" -> text,
       "note" -> text,
-      "isDone" -> boolean,
-      "dueDate" -> sqlDate
+      "dueDate" -> optional(sqlDate)
     )(input2Task)(task2Input)
   )
 }
