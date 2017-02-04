@@ -77,6 +77,10 @@ class TaskController @Inject() (val messagesApi: MessagesApi) extends Controller
 
 
 
+  def allDependencies = Action {
+    Ok(views.html.allDependencies(DBReader.getAllDependencies()))
+  }
+
 
 
   def createDependency = Action { implicit request =>
@@ -92,9 +96,12 @@ class TaskController @Inject() (val messagesApi: MessagesApi) extends Controller
       },
       (dependency: Dependency) => {
         Logger.info(s"got dependency from form: $dependency")
-        // DBWriter.putDependency()
-        // TODO we need a signature of put dependency that accepts the ids of tasks instead
-        Redirect(routes.TaskController.get)
+        // TODO error handling
+        val ancestor: Task = DBReader.getTaskById(dependency.taskID).get
+        val child: Task = DBReader.getTaskById(dependency.dependencyTaskID).get
+        DBWriter.putDependency(ancestor, child)
+
+        Redirect(routes.TaskController.allDependencies)
       }
     )
   }

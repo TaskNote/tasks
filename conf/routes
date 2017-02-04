@@ -26,6 +26,7 @@ GET     /tasks/new                  controllers.TaskController.addTaskForm
 POST    /tasks                      controllers.TaskController.createTask
 
 
+GET     /dependencies               controllers.TaskController.allDependencies
 # endpoints for dependency creations
-GET     /dep/new                    controllers.TaskController.addDependencyForm
-POST    /dep                        controllers.TaskController.createDependency
+GET     /dependencies/new           controllers.TaskController.addDependencyForm
+POST    /dependencies               controllers.TaskController.createDependency

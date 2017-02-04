@@ -25,6 +25,12 @@ object DBReader {
 
   }
 
+  // TODO return an option?
+  def getTaskById(id: Int): Option[Task] = {
+    val query = Tables.tasks filter { _.id === id }
+    DBConnection.run(query.result).get.headOption
+  }
+
   /**
     *
     * This method will return all tasks given a taskTopic ID.
