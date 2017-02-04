@@ -4,5 +4,7 @@
 @helper.form(action = routes.TaskController.createTask()) {
   @helper.inputText(taskForm("title"))
   @helper.inputText(taskForm("note"))
+  @helper.checkbox(taskForm("isDone"))
+  @helper.inputDate(taskForm("dueDate"))
 <button id="submit" type="submit" value="Submit">submit</button>
 }

@@ -5,6 +5,7 @@ import javax.inject._
 
 import org.tasks.Forms
 import play.api._
+import play.api.data.Form
 import play.api.mvc._
 import play.api.i18n.{I18nSupport, MessagesApi}
 
@@ -47,8 +48,12 @@ class TaskController @Inject() (val messagesApi: MessagesApi) extends Controller
     */
   def createTask = Action { implicit request =>
     Forms.taskForm.bindFromRequest.fold(
-      formWithErrors => {
-        Logger.info(s"error in form $formWithErrors")
+      (formWithErrors: Form[Task]) => {
+        Logger.error(s"error in form $formWithErrors")
+        formWithErrors.errors foreach { err =>
+          Logger.error(err.message)
+        }
+
         // TODO need more error handling here
         BadRequest(views.html.tasks(List.empty[Task]))
       },
