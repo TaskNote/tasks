@@ -1,6 +1,6 @@
 package controllers
 
-import org.tasks.persistence.{DBReader, DBWriter, Dependency, Task}
+import org.tasks.persistence._
 import javax.inject._
 
 import org.tasks.Forms
@@ -105,6 +105,43 @@ class TaskController @Inject() (val messagesApi: MessagesApi) extends Controller
       }
     )
   }
+
+
+  def allTopics = Action {
+    Ok(views.html.allTopics(DBReader.getAllTaskTopic()))
+  }
+
+
+  def addTopicForm() = Action {
+    Ok(views.html.topicsSubmit(Forms.topicForm))
+  }
+
+  def createTopic = Action { implicit request =>
+    Forms.topicForm.bindFromRequest.fold(
+      (formWithErrors: Form[TaskTopic]) => {
+        Logger.error(s"error in form $formWithErrors")
+        formWithErrors.errors foreach { err =>
+          Logger.error(err.message)
+        }
+
+        // bad request redirect
+        BadRequest(views.html.tasks(List.empty[Task]))
+      },
+      (topic: TaskTopic) => {
+        Logger.info(s"got topic from form: $topic")
+
+        DBWriter.putTaskTopic(topic)
+
+        // TODO: redirect to a different page
+        Redirect(routes.TaskController.get)
+
+      }
+
+    )
+
+  }
+
+
 
 
   // TODO redirect to viewing all dependencies for task

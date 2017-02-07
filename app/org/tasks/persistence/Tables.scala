@@ -47,7 +47,7 @@ class Tasks(tag: Tag)
 }
 
 // Case class for Task Topics, with the same fields as the table.
-case class TaskTopic(id: Int, description: String)
+case class TaskTopic(id: Int = 0, description: String)
 
 // TaskTopic table with 2 columns: id, description, and taskID
 class TaskTopics(tag: Tag)

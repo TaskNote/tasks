@@ -30,3 +30,10 @@ GET     /dependencies               controllers.TaskController.allDependencies
 # endpoints for dependency creations
 GET     /dependencies/new           controllers.TaskController.addDependencyForm
 POST    /dependencies               controllers.TaskController.createDependency
+
+GET     /topics                     controllers.TaskController.allTopics
+
+# endpoints for topic creation
+GET     /topics/new                 controllers.TaskController.addTopicForm
+POST    /topics                     controllers.TaskController.createTopic
+
