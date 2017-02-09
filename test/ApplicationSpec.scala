@@ -53,5 +53,9 @@ class ApplicationSpec extends PlaySpec with OneAppPerTest {
       contentType(moreTasks) mustBe Some("text/html")
       contentAsString(moreTasks) must (include regex "Task\\(\\d+,internet,eating" and include regex "Task\\(\\d+,internet,eatingAgain")
     }
+
+    "write a task using a form" in {
+
+    }
   }
 }

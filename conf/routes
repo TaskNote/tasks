@@ -14,26 +14,22 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 
 
 # view all tasks
-# TODO rename to AppController or App or something that reflects this is global to all tables
-GET     /tasks                      controllers.TaskController.get
-
-
+GET     /tasks                      controllers.TaskController.getAll
 POST    /tasks/:title/:note         controllers.TaskController.put(title, note)
-
-
 # endpoints for task creation
-GET     /tasks/new                  controllers.TaskController.addTaskForm
-POST    /tasks                      controllers.TaskController.createTask
+GET     /tasks/new                  controllers.TaskController.form
+# TODO consider an endpoint for batch submit
+POST    /tasks                      controllers.TaskController.submit
 
 
-GET     /dependencies               controllers.TaskController.allDependencies
+GET     /dependencies               controllers.DependencyController.getAll
 # endpoints for dependency creations
-GET     /dependencies/new           controllers.TaskController.addDependencyForm
-POST    /dependencies               controllers.TaskController.createDependency
+GET     /dependencies/new           controllers.DependencyController.form
+POST    /dependencies               controllers.DependencyController.submit
 
-GET     /topics                     controllers.TaskController.allTopics
 
+GET     /topics                     controllers.TopicController.getAll
 # endpoints for topic creation
-GET     /topics/new                 controllers.TaskController.addTopicForm
-POST    /topics                     controllers.TaskController.createTopic
+GET     /topics/new                 controllers.TopicController.form
+POST    /topics                     controllers.TopicController.submit
 

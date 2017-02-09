@@ -29,7 +29,7 @@ object DBReader {
     *
     * This method will return all tasks given a taskTopic ID.
     *
-    * @param topicID the integer value that represents the ID of the topic
+    * @param id the integer value that represents the ID of the topic
     *
     * @return a list of topics.
     */

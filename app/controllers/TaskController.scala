@@ -18,9 +18,9 @@ class TaskController @Inject() (val messagesApi: MessagesApi) extends Controller
 
 
   /** @return all tasks in the database */
-  def get = Action {
+  def getAll = Action {
     val tasks: List[Task] = DBReader.getAllTasks()
-    Ok(views.html.tasks(tasks))
+    Ok(views.html.allTasks(tasks))
   }
 
 
@@ -34,7 +34,16 @@ class TaskController @Inject() (val messagesApi: MessagesApi) extends Controller
   def put(title: String, note: String) = Action {
     val task: Task = Task(0, title, note)
     DBWriter.putTask(task)
-    Ok(views.html.tasks(DBReader.getAllTasks()))
+    Ok(views.html.allTasks(DBReader.getAllTasks()))
+  }
+
+
+  /**
+    * Get form for adding a task.
+    * @return
+    */
+  def form = Action {
+    Ok(views.html.submitTask(Forms.taskForm))
   }
 
 
@@ -47,7 +56,7 @@ class TaskController @Inject() (val messagesApi: MessagesApi) extends Controller
     *
     * @return
     */
-  def createTask = Action { implicit request =>
+  def submit = Action { implicit request =>
     Forms.taskForm.bindFromRequest.fold(
       (formWithErrors: Form[Task]) => {
         Logger.error(s"error in form $formWithErrors")
@@ -56,96 +65,13 @@ class TaskController @Inject() (val messagesApi: MessagesApi) extends Controller
         }
 
         // TODO need more error handling here
-        BadRequest(views.html.tasks(List.empty[Task]))
+        BadRequest(views.html.allTasks(List.empty[Task]))
       },
       (task: Task) => {
         Logger.info(s"got task from form: $task")
         DBWriter.putTask(task)
-        Redirect(routes.TaskController.get)
+        Redirect(routes.TaskController.getAll)
       }
     )
-  }
-
-
-  /**
-    * Get form for adding a task.
-    * @return
-    */
-  def addTaskForm() = Action {
-    Ok(views.html.taskSubmit(Forms.taskForm))
-  }
-
-
-
-  def allDependencies = Action {
-    Ok(views.html.allDependencies(DBReader.getAllDependencies()))
-  }
-
-
-
-  def createDependency = Action { implicit request =>
-    Forms.dependencyForm.bindFromRequest.fold(
-      (formWithErrors: Form[Dependency]) => {
-        Logger.error(s"error in form $formWithErrors")
-        formWithErrors.errors foreach { err =>
-          Logger.error(err.message)
-        }
-
-        // TODO need more error handling here
-        BadRequest(views.html.tasks(List.empty[Task]))
-      },
-      (dependency: Dependency) => {
-        Logger.info(s"got dependency from form: $dependency")
-        // TODO error handling
-        val ancestor: Task = DBReader.getTaskById(dependency.taskID).get
-        val child: Task = DBReader.getTaskById(dependency.dependencyTaskID).get
-        DBWriter.putDependency(ancestor, child)
-
-        Redirect(routes.TaskController.allDependencies)
-      }
-    )
-  }
-
-
-  def allTopics = Action {
-    Ok(views.html.allTopics(DBReader.getAllTaskTopic()))
-  }
-
-
-  def addTopicForm() = Action {
-    Ok(views.html.topicsSubmit(Forms.topicForm))
-  }
-
-  def createTopic = Action { implicit request =>
-    Forms.topicForm.bindFromRequest.fold(
-      (formWithErrors: Form[TaskTopic]) => {
-        Logger.error(s"error in form $formWithErrors")
-        formWithErrors.errors foreach { err =>
-          Logger.error(err.message)
-        }
-
-        // bad request redirect
-        BadRequest(views.html.tasks(List.empty[Task]))
-      },
-      (topic: TaskTopic) => {
-        Logger.info(s"got topic from form: $topic")
-
-        DBWriter.putTaskTopic(topic)
-
-        // TODO: redirect to a different page
-        Redirect(routes.TaskController.get)
-
-      }
-
-    )
-
-  }
-
-
-
-
-  // TODO redirect to viewing all dependencies for task
-  def addDependencyForm() = Action {
-    Ok(views.html.dependencySubmit(Forms.dependencyForm))
   }
 }
