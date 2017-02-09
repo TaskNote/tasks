@@ -37,18 +37,18 @@ class DBSpec extends JUnitSuite with Matchers {
   }
 
   @Test
-  def writeTaskTopic(): Unit = {
+  def writeCategory(): Unit = {
 
     // Create two taskTopics to add to db
-    val taskTopic: Category = Category(0, description = "test")
-    val taskTopic2: Category = Category(0, description = "test2")
+    val category: Category = Category(0, description = "test")
+    val category2: Category = Category(0, description = "test2")
 
     // insert both to DB
-    val insertedTopic: Category = DBWriter.putCategory(taskTopic).get
-    val insertedTopic2: Category = DBWriter.putCategory(taskTopic2).get
+    val insertedCategory: Category = DBWriter.putCategory(category).get
+    val insertedCategory2: Category = DBWriter.putCategory(category2).get
 
     // confirm that the ID are different
-    insertedTopic.id should not be insertedTopic2.id
+    insertedCategory.id should not be insertedCategory2.id
 
 
 
@@ -73,44 +73,51 @@ class DBSpec extends JUnitSuite with Matchers {
 
   }
 
+
   @Test
-  def Dependencies(): Unit = {
-
+  // TODO more robust tests
+  def dependencies(): Unit = {
     //Add two tasks and add a dependency between one another
-    val task: Task = Task(0, title = "to do", categoryID = Option(3), note = "some note")
-    val anotherTask: Task = Task(0, title = "to do 2", categoryID = Option(3), note = "some note again")
-    val insertedTask: Task = DBWriter.putTask(task).get
-    val anotherInsertedTask: Task = DBWriter.putTask(anotherTask).get
+    val task: Task = Task(title = "to do", categoryID = Option(3), note = "some note")
+    val anotherTask: Task = Task(title = "to do 2", categoryID = Option(3), note = "some note again")
+    val parent: Task = DBWriter.putTask(task).get
+    val child: Task = DBWriter.putTask(anotherTask).get
 
-    val insertedDependency: Dependency = DBWriter.putDependency(insertedTask, anotherInsertedTask).get
-
-    println("DEPEDNENCY HERE" + insertedDependency.id)
+    val insertedDependency: Dependency = DBWriter.putDependency(parent, child).get
 
     // Verify that the dependency was created correctly
-    insertedDependency.taskID should be (insertedTask.id)
-    insertedDependency.dependencyTaskID should be (anotherInsertedTask.id)
+    insertedDependency.taskID should be (parent.id)
+    insertedDependency.dependencyTaskID should be (child.id)
 
-    // Test getting the dependency task and verify it is the correct task
-    val dependencyTask: Task = DBReader.getDependencyTasks(insertedTask.id).head
-    dependencyTask.id should be (anotherInsertedTask.id)
+    // Test getting the child and verify it is the correct task
+    val directChildren: List[Task] = DBReader.getDirectChildren(parent.id)
+    directChildren should have length 1
+    val insertedChild: Task = directChildren.head
+    insertedChild.id should be (child.id)
 
-    // Test getting the dependent task and verify it is the correct task
-    val dependentTask: Task = DBReader.getDependentTasks(anotherInsertedTask.id).head
-    dependentTask.id should be (insertedTask.id )
+    // Test getting the parent and verify it is the correct task
+    val directParents: List[Task] = DBReader.getDirectParents(child.id)
+    directParents should have length 1
+    val insertedParent: Task = directParents.head
+    insertedParent.id should be (parent.id )
 
-    // add a dependency to the one that is current a dependent
-    val anotherDependency: Task = Task(0, title = "another one - dj khaled", categoryID = Option(3), note = " whatever")
-    val insertDependencyTask: Task = DBWriter.putTask(anotherDependency).get
+    // add a new dependency to the child
+    val insertedGrandchild: Task = DBWriter.putTask(
+      Task(
+        title = "another one - dj khaled",
+        categoryID = Option(3),
+        note = " whatever"
+      )
+    ).get
 
-    val secondDep: Dependency = DBWriter.putDependency(anotherInsertedTask, insertDependencyTask).get
+    DBWriter.putDependency(child, insertedGrandchild)
 
-
-    println("tasks id is" + insertedTask.id)
     // get a list of tasks by calling the transitive dependency task function
-    val transitiveTasks: List[Task] = DBReader.getTransitiveDependencyTasks(insertedTask.id)
+    val descendants: List[Task] = DBReader.getDescendants(insertedParent.id)
+    descendants map{ _.id } equals List(child.id, insertedGrandchild.id) should be (true)
 
-    transitiveTasks map{ _.id } equals List(anotherInsertedTask.id, insertDependencyTask.id) should be (true)
-
-    //transitiveTasks.equals(List(anotherInsertedTask, insertDependencyTask) ) should be (true)
+    val ancestors: List[Task] = DBReader.getAncestors(insertedGrandchild.id)
+    println(ancestors)
+    ancestors map { _.id } equals List(child.id, parent.id) should be (true)
   }
 }
