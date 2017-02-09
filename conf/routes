@@ -28,8 +28,8 @@ GET     /dependencies/new           controllers.DependencyController.form
 POST    /dependencies               controllers.DependencyController.submit
 
 
-GET     /topics                     controllers.TopicController.getAll
-# endpoints for topic creation
-GET     /topics/new                 controllers.TopicController.form
-POST    /topics                     controllers.TopicController.submit
+GET     /categories                     controllers.CategoryController.getAll
+# endpoints for category creation
+GET     /categories/new                 controllers.CategoryController.form
+POST    /categories                     controllers.CategoryController.submit
 

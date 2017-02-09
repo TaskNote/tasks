@@ -9,16 +9,16 @@ object DBReader {
 
 
   /**
-    * This method will call a query to the DB and return all TaskTopics No Param.
+    * This method will call a query to the DB and return all Categories No Param.
     *
-    * @return a list of TaskTopic tables.
+    * @return a list of Category tables.
     */
-  def getAllTaskTopic(): List[TaskTopic] = {
+  def getAllCategories(): List[Category] = {
 
     // creating a query statement, where we are querying for all TaskTopics, which will be returned
     // as a list of TaskTopic, the case class.
-    val query: Query[TaskTopics, TaskTopic, Seq] = for {
-      taskTopic <- Tables.topics
+    val query: Query[Categories, Category, Seq] = for {
+      taskTopic <- Tables.categories
     } yield taskTopic
 
     DBConnection.run(query.result).get.toList
@@ -44,18 +44,18 @@ object DBReader {
     *
     * This method will return all tasks given a taskTopic ID.
     *
-    * @param topicID the integer value that represents the ID of the topic
+    * @param categoryID the integer value that represents the ID of the topic
     *
     * @return a list of topics.
     */
 
-  def getTasksForTopicID(topicID: Int): List[Task] = {
+  def getTasksForCategoryID(categoryID: Int): List[Task] = {
 
     // Creating a query statement to query for all tasks where the task.topID id is equal to the one provided
     val query: Query[Tasks, Task, Seq] = for {
 
       // for all tasks if task's topic ID is equal to topic ID in param
-      task <- Tables.tasks if task.topicID === topicID
+      task <- Tables.tasks if task.categoryID === categoryID
 
     } yield task
 

@@ -40,12 +40,12 @@ class DBSpec extends JUnitSuite with Matchers {
   def writeTaskTopic(): Unit = {
 
     // Create two taskTopics to add to db
-    val taskTopic: TaskTopic = TaskTopic(0, description = "test")
-    val taskTopic2: TaskTopic = TaskTopic(0, description = "test2")
+    val taskTopic: Category = Category(0, description = "test")
+    val taskTopic2: Category = Category(0, description = "test2")
 
     // insert both to DB
-    val insertedTopic: TaskTopic = DBWriter.putTaskTopic(taskTopic).get
-    val insertedTopic2: TaskTopic = DBWriter.putTaskTopic(taskTopic2).get
+    val insertedTopic: Category = DBWriter.putCategory(taskTopic).get
+    val insertedTopic2: Category = DBWriter.putCategory(taskTopic2).get
 
     // confirm that the ID are different
     insertedTopic.id should not be insertedTopic2.id
@@ -64,11 +64,11 @@ class DBSpec extends JUnitSuite with Matchers {
     allTasks.isEmpty should not be true
 
     // Create a task with a topic ID
-    val task: Task = Task(0, title = "to do", topicID = Option(3), note = "some note")
+    val task: Task = Task(0, title = "to do", categoryID = Option(3), note = "some note")
     val insertedTask: Task = DBWriter.putTask(task).get
 
     // verify that we can return the singular task and that it is the one created above
-    val listWithTask: List[Task] = DBReader.getTasksForTopicID(insertedTask.topicID.get)
+    val listWithTask: List[Task] = DBReader.getTasksForCategoryID(insertedTask.categoryID.get)
     listWithTask foreach {task: Task => task.id should be (insertedTask.id) }
 
   }
@@ -77,8 +77,8 @@ class DBSpec extends JUnitSuite with Matchers {
   def Dependencies(): Unit = {
 
     //Add two tasks and add a dependency between one another
-    val task: Task = Task(0, title = "to do", topicID = Option(3), note = "some note")
-    val anotherTask: Task = Task(0, title = "to do 2", topicID = Option(3), note = "some note again")
+    val task: Task = Task(0, title = "to do", categoryID = Option(3), note = "some note")
+    val anotherTask: Task = Task(0, title = "to do 2", categoryID = Option(3), note = "some note again")
     val insertedTask: Task = DBWriter.putTask(task).get
     val anotherInsertedTask: Task = DBWriter.putTask(anotherTask).get
 
@@ -99,7 +99,7 @@ class DBSpec extends JUnitSuite with Matchers {
     dependentTask.id should be (insertedTask.id )
 
     // add a dependency to the one that is current a dependent
-    val anotherDependency: Task = Task(0, title = "another one - dj khaled", topicID = Option(3), note = " whatever")
+    val anotherDependency: Task = Task(0, title = "another one - dj khaled", categoryID = Option(3), note = " whatever")
     val insertDependencyTask: Task = DBWriter.putTask(anotherDependency).get
 
     val secondDep: Dependency = DBWriter.putDependency(anotherInsertedTask, insertDependencyTask).get
@@ -112,16 +112,5 @@ class DBSpec extends JUnitSuite with Matchers {
     transitiveTasks map{ _.id } equals List(anotherInsertedTask.id, insertDependencyTask.id) should be (true)
 
     //transitiveTasks.equals(List(anotherInsertedTask, insertDependencyTask) ) should be (true)
-
-
-
-
-
-
-
-
-
   }
-
-
 }

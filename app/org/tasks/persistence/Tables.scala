@@ -10,7 +10,7 @@ import slick.driver.H2Driver.api._
   */
 
 // Case class for task that has the same fields as the table.
-case class Task(id: Int = 0, title: String, note: String, topicID: Option[Int] = None, creationDate: Date = new Date(System.currentTimeMillis()),
+case class Task(id: Int = 0, title: String, note: String, categoryID: Option[Int] = None, creationDate: Date = new Date(System.currentTimeMillis()),
                 dueDate: Option[Date] = None, isDone: Boolean = false)
 
 // A task Table with 5 columns: id, title, note, topicID, and dueDate
@@ -27,7 +27,7 @@ class Tasks(tag: Tag)
   def note: Rep[String] = column[String]("NOTE")
 
   // column to keep track of what topic the task is in
-  def topicID: Rep[Option[Int]] = column[Option[Int]]("TOPIC_ID", O.Default(None))
+  def categoryID: Rep[Option[Int]] = column[Option[Int]]("CATEGORY_ID", O.Default(None))
 
   // column for the creation date of the task.
   def creationDate: Rep[Date] = column[Date]("CREATION_DATE", O.Default(new Date(System.currentTimeMillis())))
@@ -42,25 +42,25 @@ class Tasks(tag: Tag)
   def compositeKey = index("TASK_COMPOSITE_KEY", (title, note, dueDate), unique = true)
 
   // Every table needs a * projection with the same type as the table's type parameter
-  def * = (id, title, note, topicID, creationDate, dueDate, isDone) <> (Task.tupled, Task.unapply)
+  def * = (id, title, note, categoryID, creationDate, dueDate, isDone) <> (Task.tupled, Task.unapply)
 
 }
 
 // Case class for Task Topics, with the same fields as the table.
-case class TaskTopic(id: Int = 0, description: String)
+case class Category(id: Int = 0, description: String)
 
 // TaskTopic table with 2 columns: id, description, and taskID
-class TaskTopics(tag: Tag)
-  extends Table[TaskTopic](tag, "TASK_TOPIC") {
+class Categories(tag: Tag)
+  extends Table[Category](tag, "CATEGORY") {
 
   // column for ID, which will be the primary key and will be automatically generated incrementally
-  def id: Rep[Int] = column[Int]("TOPIC_ID", O.PrimaryKey, O.AutoInc)
+  def id: Rep[Int] = column[Int]("CATEGORY_ID", O.PrimaryKey, O.AutoInc)
 
   // column for description
   def description: Rep[String] = column[String]("DESCRIPTION")
 
   // * projection
-  def * = (id, description) <> (TaskTopic.tupled, TaskTopic.unapply)
+  def * = (id, description) <> (Category.tupled, Category.unapply)
 
 }
 
@@ -93,7 +93,7 @@ class Dependencies(tag: Tag)
 object Tables {
 
   // Creating an interface for TaskTopics
-  lazy val topics: TableQuery[TaskTopics] = TableQuery[TaskTopics]
+  lazy val categories: TableQuery[Categories] = TableQuery[Categories]
 
   // Creating an interface for Tasks
   lazy val tasks: TableQuery[Tasks] = TableQuery[Tasks]

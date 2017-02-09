@@ -1,8 +1,0 @@
-@import org.tasks.persistence.TaskTopic
-@(topicForm: Form[TaskTopic])(implicit messages: Messages)
-
-@helper.form(action = routes.TopicController.submit()) {
-@helper.inputText(topicForm("topic"))
-
-<button id="submit" type="submit" value="Submit">submit</button>
-}

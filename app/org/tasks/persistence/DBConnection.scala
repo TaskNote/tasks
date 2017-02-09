@@ -30,7 +30,7 @@ object DBConnection {
   /** Creates schema. Will not throw an exception if the schema already exists. */
   @throws[RuntimeException]("when there is a database error other than pre-existing schema")
   def createSchema(): Unit = {
-    val action = (Tables.tasks.schema ++ Tables.dependencies.schema ++ Tables.topics.schema).create
+    val action = (Tables.tasks.schema ++ Tables.dependencies.schema ++ Tables.categories.schema).create
     this.run(action) recover {
       case error: Exception if !error.getMessage.matches("Table .+ already exists[\\S\\s]]") => throw error
     }

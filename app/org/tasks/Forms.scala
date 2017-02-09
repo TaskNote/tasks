@@ -2,7 +2,7 @@ package org.tasks
 
 import java.sql.Date
 
-import org.tasks.persistence.{Dependency, Task, TaskTopic}
+import org.tasks.persistence.{Dependency, Task, Category}
 import play.api.data.Form
 import play.api.data.Forms._
 
@@ -23,10 +23,10 @@ object Forms {
 
   private[this] def dependency2Input(dependency: Dependency): Option[(Int, Int)] = Option(dependency.taskID, dependency.dependencyTaskID)
 
-  private[this] def input2Topic(inputTopic: String): TaskTopic =
-    TaskTopic.apply(description = inputTopic)
+  private[this] def input2Category(inputCategory: String): Category =
+    Category.apply(description = inputCategory)
 
-  private[this] def topic2Input(topic: TaskTopic): Option[String] = Option(topic.description)
+  private[this] def category2Input(category: Category): Option[String] = Option(category.description)
 
 
 
@@ -46,11 +46,9 @@ object Forms {
     )(input2Dependency)(dependency2Input)
   )
 
-  val topicForm: Form[TaskTopic] = Form(
+  val categoryForm: Form[Category] = Form(
     mapping(
-      "topic" -> text
-    )(input2Topic)(topic2Input)
+      "category" -> text
+    )(input2Category)(category2Input)
   )
-
-
 }

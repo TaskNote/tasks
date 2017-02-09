@@ -27,14 +27,14 @@ object DBWriter {
 
   
   /**
-    * Inserts `taskTopic` as a new row in the database
+    * Inserts `category` as a new row in the database
     *
-    * @param taskTopic [[TaskTopic]] to be inserted.
-    * @return a copy of `taskTopic` with the id allocated by the database.
+    * @param category [[Category]] to be inserted.
+    * @return a copy of `category` with the id allocated by the database.
     */
-  def putTaskTopic(taskTopic: TaskTopic): Try[TaskTopic] = {
+  def putCategory(category: Category): Try[Category] = {
 
-    val action: DBIO[TaskTopic] = Tables.topics returning Tables.topics.map(_.id) into { (taskTopic, id) => taskTopic.copy(id = id) } += taskTopic
+    val action: DBIO[Category] = Tables.categories returning Tables.categories.map(_.id) into { (cat, id) => cat.copy(id = id) } += category
     DBConnection.run(action)
 
   }

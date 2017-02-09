@@ -1,0 +1,8 @@
+@import org.tasks.persistence.Category
+@(categoryForm: Form[Category])(implicit messages: Messages)
+
+@helper.form(action = routes.CategoryController.submit()) {
+@helper.inputText(categoryForm("category"))
+
+<button id="submit" type="submit" value="Submit">submit</button>
+}
