@@ -21,7 +21,8 @@ GET     /tasks/new                  controllers.TaskController.form
 # TODO consider an endpoint for batch submit
 POST    /tasks                      controllers.TaskController.submit
 
-GET     /tasks/:id/edit                 controllers.TaskController.edit(id: Int)
+GET     /tasks/:id/edit             controllers.TaskController.edit(id: Int)
+POST    /tasks/submitEdit           controllers.TaskController.submitEdit
 
 
 GET     /dependencies               controllers.DependencyController.getAll

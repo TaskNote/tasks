@@ -1,16 +1,12 @@
 @import org.tasks.persistence.Task
-@(taskId: Int, task: Task)
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>edit task</title>
-    <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
-    <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
-    <script src="@routes.Assets.versioned("javascripts/hello.js")" type="text/javascript"></script>
-    </head>
-    <body>
-        you are editing task with id @taskId<br>
-        @task.toString
-    </body>
-</html>
+@(taskID: Int, task: Task, taskForm: Form[Task])(implicit messages: Messages)
+you are editing task with id @(taskID)
+@helper.form(action = routes.TaskController.submitEdit()) {
+  @helper.inputText(taskForm("id"))
+  @helper.inputText(taskForm("title"))
+  @helper.inputText(taskForm("note"))
+  @helper.inputText(taskForm("categoryID"))
+  @helper.inputDate(taskForm("dueDate"))
+  @helper.inputText(taskForm("isDone"))
+<button id="submit" type="submit" value="Submit">submit</button>
+}>

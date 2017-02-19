@@ -12,10 +12,29 @@ import play.api.data.Forms._
 // TODO rename, conflicts with play classes
 object Forms {
 
-  private[this] def input2Task(inputTitle: String, inputNote: String, inputDueDate: Option[Date]): Task =
+  // functions used for submitting tasks
+  private[this] def input2Task(inputTitle: String, inputNote: String, inputDueDate: Option[Date]): Task = {
     Task.apply(title = inputTitle, note = inputNote, dueDate = inputDueDate)
+  }
 
-  private[this] def task2Input(task: Task) = Option((task.title, task.note, task.dueDate ))
+  private[this] def task2Input(task: Task): Option[(String, String, Option[Date])] = {
+    Option((task.title, task.note, task.dueDate ))
+  }
+
+
+  private[this] def input2EditedTask(inputId: Int,
+                                     inputTitle: String,
+                                     inputNote: String,
+                                     inputCategoryID: Option[Int],
+                                     inputDueDate: Option[Date],
+                                     inputIsDone: Boolean): Task = {
+    Task.apply(id = inputId, title = inputTitle, note = inputNote, categoryID = inputCategoryID, dueDate = inputDueDate, isDone = inputIsDone)
+  }
+
+
+  private[this] def editedTask2Input(task: Task): Option[(Int, String, String, Option[Int], Option[Date], Boolean)] = {
+    Option(task.id, task.title, task.note, task.categoryID, task.dueDate, task.isDone)
+  }
 
 
   private[this] def input2Dependency(inputFrom: Int, inputTo: Int): Dependency =
@@ -31,6 +50,7 @@ object Forms {
 
 
 
+  // form used for submitting tasks
   val taskForm: Form[Task] = Form(
     mapping(
       "title" -> text,
@@ -41,11 +61,17 @@ object Forms {
 
 
   // form used for editing tasks
-//  val taskEditForm: Form[Task] = Form(
-//    mapping(
-//
-//    )
-//  )
+  val taskEditForm: Form[Task] = Form(
+    mapping(
+      // TODO we need a way to hide this or otherwise make it uneditable
+      "id" -> number,
+      "title" -> text,
+      "note" -> text,
+      "categoryID" -> optional(number),
+      "dueDate" -> optional(sqlDate),
+      "isDone" -> boolean
+    )(input2EditedTask)(editedTask2Input)
+  )
 
   val dependencyForm: Form[Dependency] = Form(
     mapping(

@@ -1,5 +1,7 @@
 package org.tasks.persistence
 
+import play.api.Logger
+
 import scala.util.Try
 import slick.driver.H2Driver.api._
 
@@ -28,6 +30,7 @@ object DBWriter {
 
   def updateTask(taskId: Int, newTask: Task): Try[Int] = {
 
+    Logger.info(s"updating task with id $taskId")
     val q = for { task <- Tables.tasks if task.id === taskId } yield task
     // TODO not sure if we need this copy here, i think we want to ensure the ids remain the same
     DBConnection.run(q.update(newTask.copy(id = taskId)))

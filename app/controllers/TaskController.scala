@@ -40,7 +40,21 @@ class TaskController @Inject() (val messagesApi: MessagesApi) extends Controller
   def edit(taskId: Int) = Action {
     // TODO don't call .get
     val task: Task = DBReader.getTaskById(taskId).get
-    Ok(views.html.editTask(taskId, task))
+    Ok(views.html.editTask(taskId, task, Forms.taskEditForm.fill(task)))
+  }
+
+
+  def submitEdit = Action { implicit request =>
+    Forms.taskEditForm.bindFromRequest.fold(
+      formWithErrors => {
+        BadRequest(views.html.allTasks(List.empty))
+      },
+      task => {
+        Logger.info(s"got updated task from form: $task")
+        DBWriter.updateTask(task.id, task)
+        Redirect(routes.TaskController.getAll)
+      }
+    )
   }
 
 
