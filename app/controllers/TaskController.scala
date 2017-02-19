@@ -13,7 +13,6 @@ import play.api.i18n.{I18nSupport, MessagesApi}
   * Created by ergo on 2/1/17.
   */
 @Singleton
-// TODO rename to AppController or App or something that reflects this is global to all tables
 class TaskController @Inject() (val messagesApi: MessagesApi) extends Controller with I18nSupport {
 
 
