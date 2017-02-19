@@ -13,7 +13,7 @@ import play.api.data.Forms._
 object Forms {
 
   private[this] def input2Task(inputTitle: String, inputNote: String, inputDueDate: Option[Date]): Task =
-    Task.apply(title = inputTitle, note = inputNote)
+    Task.apply(title = inputTitle, note = inputNote, dueDate = inputDueDate)
 
   private[this] def task2Input(task: Task) = Option((task.title, task.note, task.dueDate ))
 
@@ -38,6 +38,14 @@ object Forms {
       "dueDate" -> optional(sqlDate)
     )(input2Task)(task2Input)
   )
+
+
+  // form used for editing tasks
+//  val taskEditForm: Form[Task] = Form(
+//    mapping(
+//
+//    )
+//  )
 
   val dependencyForm: Form[Dependency] = Form(
     mapping(

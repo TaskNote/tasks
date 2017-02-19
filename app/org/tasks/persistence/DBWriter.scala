@@ -25,6 +25,14 @@ object DBWriter {
 
   }
 
+
+  def updateTask(taskId: Int, newTask: Task): Try[Int] = {
+
+    val q = for { task <- Tables.tasks if task.id === taskId } yield task
+    // TODO not sure if we need this copy here, i think we want to ensure the ids remain the same
+    DBConnection.run(q.update(newTask.copy(id = taskId)))
+  }
+
   
   /**
     * Inserts `category` as a new row in the database

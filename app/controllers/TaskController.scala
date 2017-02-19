@@ -31,9 +31,16 @@ class TaskController @Inject() (val messagesApi: MessagesApi) extends Controller
     * @return
     */
   def put(title: String, note: String) = Action {
-    val task: Task = Task(0, title, note)
+    val task: Task = Task(title = title, note = note)
     DBWriter.putTask(task)
     Ok(views.html.allTasks(DBReader.getAllTasks()))
+  }
+
+
+  def edit(taskId: Int) = Action {
+    // TODO don't call .get
+    val task: Task = DBReader.getTaskById(taskId).get
+    Ok(views.html.editTask(taskId, task))
   }
 
 

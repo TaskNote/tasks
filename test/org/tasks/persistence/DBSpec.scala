@@ -24,8 +24,8 @@ class DBSpec extends JUnitSuite with Matchers {
     val date = new Date(System.currentTimeMillis())
 
     // Creating two tasks to add to db
-    val task: Task = Task(0, title = "to do", note = "some note", dueDate = Option(date))
-    val anotherTask: Task = Task(0, title = "to do", note = "some other note")
+    val task: Task = Task(title = "to do", note = "some note", dueDate = Option(date))
+    val anotherTask: Task = Task(title = "to do", note = "some other note")
     val insertedTask: Task = DBWriter.putTask(task).get
     val anotherInsertedTask: Task = DBWriter.putTask(anotherTask).get
 
@@ -35,6 +35,19 @@ class DBSpec extends JUnitSuite with Matchers {
     // creating an identical task to 'task' should fail
     intercept[Exception] { DBWriter.putTask(task).get }
   }
+
+
+  /** Checks that we can update a task in the db. */
+  @Test
+  def updateTask(): Unit = {
+    val task: Task = DBWriter.putTask(Task(title = "to do", note = "some note")).get
+    DBWriter.updateTask(task.id, task.copy(title = "updated title"))
+
+    val updatedTask: Task = DBReader.getTaskById(task.id).get
+    updatedTask.id should be (task.id)
+    updatedTask.title should be ("updated title")
+  }
+
 
   @Test
   def writeCategory(): Unit = {
