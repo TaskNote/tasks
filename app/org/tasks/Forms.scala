@@ -13,12 +13,13 @@ import play.api.data.Forms._
 object Forms {
 
   // functions used for submitting tasks
-  private[this] def input2Task(inputTitle: String, inputNote: String, inputDueDate: Option[Date]): Task = {
-    Task.apply(title = inputTitle, note = inputNote, dueDate = inputDueDate)
+  private[this] def input2Task(inputTitle: String, inputNote: String, inputDueDate: Option[Date],
+                               inputCategoryID: Option[Int]): Task = {
+    Task.apply(title = inputTitle, note = inputNote, dueDate = inputDueDate, categoryID = inputCategoryID)
   }
 
-  private[this] def task2Input(task: Task): Option[(String, String, Option[Date])] = {
-    Option((task.title, task.note, task.dueDate ))
+  private[this] def task2Input(task: Task): Option[(String, String, Option[Date], Option[Int])] = {
+    Option((task.title, task.note, task.dueDate, task.categoryID ))
   }
 
 
@@ -55,7 +56,8 @@ object Forms {
     mapping(
       "title" -> text,
       "note" -> text,
-      "dueDate" -> optional(sqlDate)
+      "dueDate" -> optional(sqlDate),
+      "categoryID" -> optional(number)
     )(input2Task)(task2Input)
   )
 

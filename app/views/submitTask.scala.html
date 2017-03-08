@@ -1,9 +1,23 @@
 @import org.tasks.persistence.Task
+@import org.tasks.persistence.DBReader
+@import helper._
 @(taskForm: Form[Task])(implicit messages: Messages)
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+@views.html.navigationBar()
 
 @helper.form(action = routes.TaskController.submit()) {
   @helper.inputText(taskForm("title"))
   @helper.inputText(taskForm("note"))
   @helper.inputDate(taskForm("dueDate"))
+
+@select(
+taskForm("Categories"),
+options(DBReader.getAllCategories.map(_.description)),
+'_label -> "Category", '_default -> "-- Select Category --"
+)
+
 <button id="submit" type="submit" value="Submit">submit</button>
 }
