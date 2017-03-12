@@ -3,15 +3,24 @@
 @import helper._
 @(taskForm: Form[Task])(implicit messages: Messages)
 
+
+
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
 @views.html.navigationBar()
 
+<style>.info {
+display: none;
+}</style>
+
+<div class="panel panel-default" style="max-width:400px;margin-left:auto; margin-right:auto;">
+
+
 @helper.form(action = routes.TaskController.submit()) {
-  @helper.inputText(taskForm("title"))
-  @helper.inputText(taskForm("note"))
-  @helper.inputDate(taskForm("dueDate"))
+  @helper.inputText(taskForm("title"), 'class -> "form-control")
+  @helper.textarea(taskForm("note"), 'class -> "form-control")
+  @helper.inputDate(taskForm("dueDate"), 'class -> "form-control")
 
 @select(
 taskForm("Categories"),

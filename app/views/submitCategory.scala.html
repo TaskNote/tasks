@@ -9,8 +9,11 @@
 
 @views.html.navigationBar()
 
+<div class="panel panel-default" style="max-width:400px;margin-left:auto; margin-right:auto;">
+
+
 @helper.form(action = routes.CategoryController.submit()) {
-@helper.inputText(categoryForm("category"))
+@helper.inputText(categoryForm("category"), 'class -> "form-control"))
 
 <button id="submit" type="submit" value="Submit">submit</button>
 }
